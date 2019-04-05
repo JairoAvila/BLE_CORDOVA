@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>BLE Controller</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
+    <style>
+        @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }  @viewport { width: 100vw ; min-zoom: 100% zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }           @viewport { user-zoom: fixed ; min-zoom: 100% ; }
+        .btn {
+            margin: 20px;
+            padding: 10px;
+            font-size: 32px;
+        }
+    </style>
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="onsenUI/css/onsenui.css">
+    <link rel="stylesheet" href="onsenUI/css/onsen-css-components.min.css">
+    <link rel="stylesheet" href="css/loader.css">
+
+</head>
+
+<body>
+
+    <div id="elementLoader" class="loading" style="visibility: hidden;">Loading&#8230;</div>
+
+    <ons-navigator swipeable id="myNavigator" page="page1.html"></ons-navigator>
+        <template id="page1.html">
+            <ons-page id="page1">
+              <ons-toolbar style="background-color: #3D51B4">
+                <div class="left"><ons-toolbar-button style="color: white;">EXCELAIR</ons-toolbar-button></div>
+                <div class="right"><ons-toolbar-button><ons-icon size="30px" style="color: white;" icon="fa-info-circle"></ons-icon></ons-toolbar-button></div>
+              </ons-toolbar>
+              <ons-scroller style="height: 100%; width: 100%">
+                    <ons-card>
+                        <ons-row>XXXX</ons-row>
+                        <ons-row>EXCELAIR</ons-row>
+                        <ons-row>HVAC MONITOR</ons-row>
+                        <ons-row>UNIT #XXXXX</ons-row>
+                    </ons-card>
+                    <ons-card>
+                        <ons-row>
+                            <ons-col>
+                                <ons-row><b id="title-device"></b></ons-row>
+                                <ons-row>&nbsp;</ons-row>
+                                <ons-row id="row-device"></ons-row>
+                            </ons-col>
+                            <ons-col width="50px">
+                                <ons-fab id="btn_escanear" style="background-color: #3D51B4">
+                                    <ons-ripple></ons-ripple>
+                                    <ons-icon style="color: white;" icon="fa-chevron-right"></ons-icon>
+                                </ons-fab>
+                                <ons-fab id="btn_desconectar" style="background-color: #3D51B4; display: none;">
+                                    <ons-ripple></ons-ripple>
+                                    <ons-icon style="color: white;" icon="fa-times"></ons-icon>
+                                </ons-fab>    
+                            </ons-col>
+                        </ons-row>
+                    </ons-card>
+                    <ons-card>
+                        <ons-row>
+                            <ons-col>
+                                <ons-row><b>Wifi Network Entry</b></ons-row>
+                                <ons-row>&nbsp;</ons-row>
+                                <ons-row id="row-wifi"></ons-row>
+                            </ons-col>
+                            <ons-col width="50px">
+                                <ons-fab id="btn_red" style="background-color: #3D51B4" disabled>
+                                    <ons-ripple></ons-ripple>
+                                    <ons-icon style="color: white;" icon="fa-chevron-right"></ons-icon>
+                                </ons-fab>    
+                            </ons-col>
+                        </ons-row>
+                    </ons-card>
+                    <ons-card>
+                        <ons-row>
+                            <ons-col>
+                                    <ons-row>&nbsp;</ons-row>
+                                    <ons-row><b>Measurements</b></ons-measurementsrow>
+                                    <ons-row>&nbsp;</ons-row>
+                            </ons-col>
+                            <ons-col width="50px">
+                                    <ons-fab id="btn_mediciones" style="background-color: #3D51B4">
+                                        <ons-ripple></ons-ripple>
+                                        <ons-icon style="color: white;" icon="fa-chevron-right" disabled></ons-icon>
+                                    </ons-fab>    
+                            </ons-col>
+                        </ons-row>
+                    </ons-card>
+              </ons-scroller>
+            </ons-page>
+        </template>
+
+        <template id="page2.html">
+            <ons-page id="page2">
+                <ons-toolbar style="background-color: #3D51B4">
+                  <div class="left"><ons-back-button></ons-back-button></div>
+                  <div class="center" style="color: white;">Avaliable devices</div>
+                </ons-toolbar>
+                <ons-scroller style="height: 100%; width: 100%" id="scrollDevices">
+                    <br>
+                    <center><img id="imageNotFound" src="img/bluetooth-disabled.png" style="width: 50%; height: 30%; display: none;"></center>
+                </ons-scroller>
+        </template>
+
+        <template id="page3.html">
+            <ons-page id="page3">
+                <ons-toolbar style="background-color: #6200EE">
+                  <div class="center" style="color: white;">Measurements</div>
+                  <div class="right"><ons-toolbar-button onclick="notificationDevices.onCancel()"><ons-icon size="30px" style="color: white;" icon="fa-times"></ons-icon></ons-toolbar-button></div>
+                </ons-toolbar>
+                <ons-scroller style="height: 100%; width: 100%" id="scrollDevices">
+                    <ons-row>
+                      <ons-col>
+                            <ons-col>
+                          <ons-card>
+                            <div class="title"><h4>Temperature1</h4></div>
+                            <div class="content">
+                              <center><h1><i id="temp1">0.00</i><i> F</i></h1></center>
+                            </div>
+                          </ons-card>
+                      </ons-col>
+                      <ons-col>
+                           <ons-card>
+                            <div class="title"><h4>Temperature2</h4></div>
+                            <div class="content">
+                              <center><h1><i id="temp2">0.00</i><i> F</i></h1></center>
+                            </div>
+                          </ons-card>     
+                      </ons-col>
+                    </ons-row>
+                    <ons-row>
+                        <ons-col>
+                          <ons-card>
+                            <div class="title">Humidity1</div>
+                            <div class="content">
+                              <center><h1><i id="hum1">0.00</i><i> %</i></h1></center>
+                            </div>
+                          </ons-card>
+                      </ons-col>
+                      <ons-col>
+                           <ons-card>
+                            <div class="title">Humidity2</div>
+                            <div class="content">
+                              <center><h1><i id="hum2">0.00</i><i> %</i></h1></center>
+                            </div>
+                          </ons-card>     
+                      </ons-col>
+                    </ons-row>
+                    <ons-row>
+                      <ons-col>
+                          <ons-card>
+                            <div class="title">Pressure1</div>
+                            <div class="content">
+                              <center><h1><i id="pres1">0.00</i><i> PSI</i></h1></center>
+                            </div>
+                          </ons-card>
+                      </ons-col>
+                      <ons-col>
+                           <ons-card>
+                            <div class="title">Pressure2</div>
+                            <div class="content">
+                              <center><h1><i id="pres2">0.00</i><i> PSI</i></h1></center>
+                            </div>
+                          </ons-card>     
+                      </ons-col>
+                    </ons-row>
+                    <ons-row>
+                        <ons-card>
+                            <div class="title">Voltage</div>
+                            <div class="content">
+                              <center><h1><i id="volt">0.00</i><i> V</i></h1></center>
+                            </div>
+                          </ons-card>
+                      </ons-col>
+                      <ons-col>
+                           <ons-card>
+                            <div class="title">Current</div>
+                            <div class="content">
+                              <center><h1><i id="current">0.00</i><i> A</i></h1></center>
+                            </div>
+                          </ons-card>     
+                      </ons-col>
+                    </ons-row>
+                </ons-scroller>
+        </template>
+
+        <template id="alert-network.html">
+          <ons-alert-dialog id="my-alert-network" modifier="rowfooter">
+            <div class="alert-dialog-title">Wi-Fi Network Data</div>
+            <div class="alert-dialog-content">
+                <p><ons-input id="network" modifier="underbar" placeholder="Network" float></ons-input></p>
+                <p><ons-input id="net-password" modifier="underbar" placeholder="Password" float></ons-input></p>
+            </div>
+            <div class="alert-dialog-footer">
+              <ons-alert-dialog-button onclick="alertNetwork.onReciveData();">Send</ons-alert-dialog-button>
+              <ons-alert-dialog-button onclick="alertNetwork.onDismiss();">Cancel</ons-alert-dialog-button>
+            </div>
+          </ons-alert-dialog>
+        </template>
+
+    <!-- Load the various JavaScript files -->
+    <script type="text/javascript" src="onsenUI/js/onsenui.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="js/lifecycle.js"></script>
+    <script type="text/javascript" src="js/ble.js"></script>
+</body>
+
+</html>
